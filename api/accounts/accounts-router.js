@@ -44,8 +44,18 @@ router.post("/", checkAccountPayload, (req, res, next) => {
     });
 });
 
-router.put("/:id", (req, res, next) => {
+router.put("/:id", checkAccountId, (req, res, next) => {
   // DO YOUR MAGIC
+  const { id } = req.params;
+  const { budget, name } = req.body;
+  model
+    .updateById(id, { budget, name })
+    .then((updated) => {
+      res.status(200).json(updated);
+    })
+    .catch((err) => {
+      res.status(500).json(err);
+    });
 });
 
 router.delete("/:id", (req, res, next) => {
