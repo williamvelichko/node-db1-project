@@ -31,7 +31,7 @@ const checkAccountNameUnique = async (req, res, next) => {
       .where("name", req.body.name.trim())
       .first();
     if (existing) {
-      next({ status: 400, message: "that name is taken" });
+      res.status(400).json({ message: "that name is taken" });
     } else {
       next();
     }
