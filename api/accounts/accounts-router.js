@@ -31,20 +31,25 @@ router.get("/:id", checkAccountId, (req, res, next) => {
     });
 });
 
-router.post("/", checkAccountPayload, (req, res, next) => {
-  // DO YOUR MAGIC
-  const { name, budget } = req.body;
-  model
-    .create({ name, budget })
-    .then((newAccount) => {
-      res.status(201).json(newAccount);
-    })
-    .catch((err) => {
-      res.status(500).json(err);
-    });
-});
+router.post(
+  "/",
+  checkAccountPayload,
+  checkAccountNameUnique,
+  (req, res, next) => {
+    // DO YOUR MAGIC
+    const { name, budget } = req.body;
+    model
+      .create({ name, budget })
+      .then((newAccount) => {
+        res.status(201).json(newAccount);
+      })
+      .catch((err) => {
+        res.status(500).json(err);
+      });
+  }
+);
 
-router.put("/:id", checkAccountId, (req, res, next) => {
+router.put("/:id", checkAccountId, checkAccountPayload, (req, res, next) => {
   // DO YOUR MAGIC
   const { id } = req.params;
   const { budget, name } = req.body;
@@ -58,9 +63,30 @@ router.put("/:id", checkAccountId, (req, res, next) => {
     });
 });
 
-router.delete("/:id", (req, res, next) => {
+router.delete("/:id", checkAccountId, (req, res, next) => {
   // DO YOUR MAGIC
+  model
+    .deleteById(req.params.id)
+    .then((deleted) => {
+      res.json(deleted);
+    })
+    .catch((err) => {
+      res.status(500).json(err);
+    });
 });
+
+// router.get("/", (req, res, next) => {
+//   // DO YOUR MAGIC
+
+//   model
+//     .getAccountByName(req.body.name)
+//     .then((accounts) => {
+//       res.status(200).json(accounts);
+//     })
+//     .catch((err) => {
+//       res.status(500).json(err);
+//     });
+// });
 
 router.use((err, req, res, next) => {
   // eslint-disable-line

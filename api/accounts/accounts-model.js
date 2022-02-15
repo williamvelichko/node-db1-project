@@ -12,27 +12,35 @@ const getById = (id) => {
   return db("accounts").where({ id: id }).first();
 };
 
-const create = async (account) => {
+const create = async ({ budget, name }) => {
   // DO YOUR MAGIC
-  let result = await db("accounts").insert({
-    budget: account.budget,
-    name: account.name,
+  let [id] = await db("accounts").insert({
+    budget: budget,
+    name: name,
   });
 
-  return result;
+  return { name, budget, id: id };
 };
 
-const updateById = async (id, account) => {
+const updateById = async (id, { budget, name }) => {
   // DO YOUR MAGIC
   let result = await db("accounts").where({ id }).update({
-    budget: account.budget,
-    name: account.name,
+    budget: budget,
+    name: name,
   });
+  return { name, budget, id: id };
+};
+
+const deleteById = async (id) => {
+  // DO YOUR MAGIC
+  let result = await getById(id);
+  await db("accounts").where({ id: id }).del();
   return result;
 };
 
-const deleteById = (id) => {
-  // DO YOUR MAGIC
+const getAccountByName = ({ name }) => {
+  //console.log(name);
+  return db("accounts").where({ name: name }).first();
 };
 
 module.exports = {
@@ -41,4 +49,5 @@ module.exports = {
   create,
   updateById,
   deleteById,
+  getAccountByName,
 };
